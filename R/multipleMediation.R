@@ -59,7 +59,10 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data=NULL,
                            moderator=list(),
                            covar=NULL,
                            mode=0,range=TRUE,rangemode=1,serial=FALSE,contrast=1,
-                      bmatrix=NULL){
+                      bmatrix=NULL,
+                      panel=FALSE,id=NULL,time=NULL,
+                      panel_model="within",panel_effect="individual",
+                      robust_se=TRUE,lag=0){
 
     # X=NULL;M=NULL;Y=NULL;labels=list();data=NULL
     # vars=list()
@@ -80,6 +83,36 @@ multipleMediation=function(X=NULL,M=NULL,Y=NULL,labels=list(),data=NULL,
     if(is.null(X)) X=labels$X
     if(is.null(M)) if(!is.null(labels$M)) M=labels$M
     if(is.null(Y)) Y=labels$Y
+
+    # Panel data detection and processing
+    if (!is.null(data) && !panel) {
+        # Auto-detect panel data structure
+        if (!is.null(id) && !is.null(time) && is_panel_data(data, id, time)) {
+            panel <- TRUE
+            message("Panel data structure detected. Setting panel=TRUE automatically.")
+        }
+    }
+    
+    # If panel data analysis is requested, use panel-specific function
+    if (panel) {
+        if (is.null(id) || is.null(time)) {
+            stop("Panel analysis requires both 'id' and 'time' variables to be specified.")
+        }
+        if (is.null(data)) {
+            stop("Panel analysis requires data to be provided.")
+        }
+        
+        # Call panel-specific mediation function
+        return(panel_multipleMediation(
+            X = X, Y = Y, M = M, 
+            id = id, time = time, data = data,
+            moderator = moderator,
+            model = panel_model,
+            effect = panel_effect,
+            robust = robust_se,
+            lag = lag
+        ))
+    }
 
     interactionNo=0
     res=c()

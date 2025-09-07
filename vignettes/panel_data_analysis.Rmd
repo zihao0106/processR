@@ -1,0 +1,227 @@
+---
+title: "Panel Data Analysis with processR"
+author: "processR Development Team"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Panel Data Analysis with processR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = NA, message = FALSE,
+                      warning = FALSE,
+                      fig.height = 5, fig.width = 7,
+                      fig.align = "center")
+```
+
+## Introduction
+
+The `processR` package has been extended to support panel data analysis, enabling researchers to analyze mediation and moderation effects in longitudinal data. This vignette demonstrates how to use these new features.
+
+## What is Panel Data?
+
+Panel data, also known as longitudinal data, contains observations on the same entities (individuals, firms, countries, etc.) over multiple time periods. This structure provides several advantages:
+
+- **Control for unobserved heterogeneity**: Fixed effects eliminate time-invariant confounders
+- **Increased statistical power**: More observations through the time dimension  
+- **Better causal inference**: Stronger identification of causal relationships
+- **Dynamic analysis**: Study how relationships evolve over time
+
+## Getting Started
+
+```{r load_packages, eval=FALSE}
+library(processR)
+library(plm)
+library(dplyr)
+```
+
+## Example Dataset
+
+We'll use the Grunfeld dataset, a classic panel dataset in econometrics:
+
+```{r load_data, eval=FALSE}
+# Load the Grunfeld dataset
+data(Grunfeld, package = "plm")
+
+# Examine the data structure
+head(Grunfeld)
+str(Grunfeld)
+
+# Check panel dimensions
+n_firms <- length(unique(Grunfeld$firm))
+n_years <- length(unique(Grunfeld$year))
+cat("Number of firms:", n_firms, "\n")
+cat("Number of years:", n_years, "\n")
+cat("Total observations:", nrow(Grunfeld), "\n")
+```
+
+## Panel Data Detection
+
+The package can automatically detect panel data structure:
+
+```{r panel_detection, eval=FALSE}
+# Check if data has panel structure
+is_panel <- is_panel_data(Grunfeld, id = "firm", time = "year")
+cat("Is panel data:", is_panel, "\n")
+
+# Prepare data for panel analysis
+panel_data <- prepare_panel_data(Grunfeld, id = "firm", time = "year")
+```
+
+## Basic Panel Mediation Analysis
+
+Let's create a synthetic mediation scenario for demonstration:
+
+```{r basic_mediation, eval=FALSE}
+# Add a synthetic mediator variable
+set.seed(123)
+Grunfeld$efficiency <- 0.3 * Grunfeld$inv + 0.2 * Grunfeld$capital + 
+                      rnorm(nrow(Grunfeld), 0, 50)
+
+# Conduct panel mediation analysis
+panel_result <- multipleMediation(
+  X = "inv",           # Investment (independent variable)
+  M = "efficiency",    # Efficiency (mediator)
+  Y = "value",         # Firm value (dependent variable)
+  data = Grunfeld,
+  panel = TRUE,        # Enable panel analysis
+  id = "firm",         # Firm identifier
+  time = "year",       # Time identifier
+  panel_model = "within",  # Fixed effects model
+  robust_se = TRUE     # Use robust standard errors
+)
+
+# View results
+print(panel_result)
+```
+
+## Advanced Panel Analysis
+
+### Multiple Mediators
+
+```{r multiple_mediators, eval=FALSE}
+# Add another mediator
+set.seed(123)
+Grunfeld$innovation <- 0.2 * Grunfeld$inv + 0.1 * Grunfeld$capital + 
+                      rnorm(nrow(Grunfeld), 0, 30)
+
+# Analysis with multiple mediators
+panel_multiple <- multipleMediation(
+  X = "inv",
+  M = c("efficiency", "innovation"),
+  Y = "value",
+  data = Grunfeld,
+  panel = TRUE,
+  id = "firm",
+  time = "year",
+  panel_model = "within"
+)
+
+print(panel_multiple)
+```
+
+### Dynamic Panel Models
+
+```{r dynamic_panel, eval=FALSE}
+# Include lagged variables
+panel_dynamic <- multipleMediation(
+  X = "inv",
+  M = "efficiency",
+  Y = "value",
+  data = Grunfeld,
+  panel = TRUE,
+  id = "firm",
+  time = "year",
+  panel_model = "within",
+  lag = 1  # Include one-period lags
+)
+```
+
+### Different Panel Model Types
+
+```{r model_comparison, eval=FALSE}
+# Compare different panel models
+models <- c("pooling", "within", "random", "between")
+results <- list()
+
+for (model in models) {
+  results[[model]] <- multipleMediation(
+    X = "inv", M = "efficiency", Y = "value",
+    data = Grunfeld, panel = TRUE,
+    id = "firm", time = "year",
+    panel_model = model
+  )
+}
+
+# Compare indirect effects
+indirect_effects <- sapply(results, function(x) x$indirect_effects$indirect_efficiency)
+print(indirect_effects)
+```
+
+## Panel-Specific Features
+
+### Model Selection
+
+- **within (Fixed Effects)**: Controls for time-invariant unobserved heterogeneity
+- **random (Random Effects)**: Assumes individual effects are uncorrelated with regressors
+- **pooling**: Ignores panel structure (generally not recommended)
+- **between**: Uses only cross-sectional variation
+
+### Effect Types
+
+- **individual**: Include individual fixed/random effects
+- **time**: Include time fixed/random effects
+- **twoways**: Include both individual and time effects
+
+### Robust Standard Errors
+
+Panel data often exhibits heteroscedasticity and serial correlation. The package automatically applies robust standard errors when `robust_se = TRUE`.
+
+## Interpretation Guidelines
+
+### Indirect Effects in Panel Data
+
+Indirect effects in panel data represent how changes in X affect Y through M, controlling for:
+- Time-invariant unobserved heterogeneity (in fixed effects models)
+- Individual-specific effects
+- Time-specific effects (when included)
+
+### Direct Effects
+
+Direct effects represent the relationship between X and Y after:
+- Controlling for the mediator M
+- Accounting for panel structure
+- Removing individual/time fixed effects
+
+## Best Practices
+
+1. **Model Selection**: Use Hausman test to choose between fixed and random effects
+2. **Robust Standard Errors**: Always use robust standard errors for panel data
+3. **Balance**: Consider whether your panel is balanced or unbalanced
+4. **Endogeneity**: Be aware of potential endogeneity issues, especially in dynamic models
+5. **Temporal Ordering**: Ensure proper temporal ordering of variables for causal inference
+
+## Limitations and Future Development
+
+Current limitations:
+- Bootstrap confidence intervals are simplified
+- Limited support for complex moderator interactions in panel context
+- No built-in diagnostic tests for panel model selection
+
+Future enhancements:
+- Full bootstrap implementation for panel data
+- Integration with panel diagnostic tests
+- Support for panel VAR models
+- Advanced dynamic panel methods (GMM estimators)
+
+## Conclusion
+
+The panel data extensions to `processR` provide researchers with powerful tools for analyzing mediation and moderation in longitudinal settings. These methods offer stronger causal inference capabilities compared to cross-sectional analyses while maintaining the user-friendly interface of the original package.
+
+## References
+
+- Baltagi, B. H. (2013). *Econometric Analysis of Panel Data*. John Wiley & Sons.
+- Hsiao, C. (2014). *Analysis of Panel Data*. Cambridge University Press.
+- Wooldridge, J. M. (2010). *Econometric Analysis of Cross Section and Panel Data*. MIT Press.

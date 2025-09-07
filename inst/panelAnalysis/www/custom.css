@@ -1,0 +1,249 @@
+/* Custom CSS for processR Panel Data Analysis App */
+
+.content-wrapper, .right-side {
+  background-color: #f8f9fa;
+}
+
+.box {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  border-left: 4px solid #007bff;
+}
+
+.box h4 {
+  color: #495057;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.box h5 {
+  color: #6c757d;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+/* Sidebar styling */
+.sidebar {
+  background-color: #343a40;
+  color: white;
+}
+
+.sidebar .box {
+  background-color: #495057;
+  border-left: 4px solid #28a745;
+}
+
+.sidebar .box h4 {
+  color: white;
+}
+
+.sidebar .box p {
+  color: #ced4da;
+}
+
+/* Button styling */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  font-weight: 500;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+  font-weight: 500;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+  font-weight: 500;
+}
+
+/* Navigation tabs */
+.nav-tabs .nav-link {
+  border: 1px solid transparent;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+/* Data table styling */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+  color: #495057;
+}
+
+/* Status indicators */
+.status-success {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-error {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.status-warning {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+/* Progress indicators */
+.progress {
+  height: 20px;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  font-size: 12px;
+  line-height: 20px;
+}
+
+/* Form controls */
+.form-control, .form-control:focus {
+  border-radius: 4px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #495057;
+}
+
+/* Alert styling */
+.alert {
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+/* Loading spinner */
+.loading-content {
+  text-align: center;
+  padding: 40px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .box {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .sidebar {
+    margin-bottom: 20px;
+  }
+}
+
+/* Code blocks */
+code {
+  background-color: #f8f9fa;
+  color: #e83e8c;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 87.5%;
+}
+
+/* Tooltips and help text */
+.help-text {
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-style: italic;
+}
+
+/* Panel info cards */
+.info-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.info-card h3 {
+  margin: 0;
+  font-weight: 300;
+}
+
+.info-card .number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  display: block;
+}
+
+/* Results formatting */
+.results-section {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 15px 0;
+  border-left: 4px solid #007bff;
+}
+
+.results-section h5 {
+  color: #495057;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.effect-value {
+  font-family: 'Courier New', monospace;
+  background-color: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+/* Download section */
+.download-section {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.download-section h4 {
+  color: #856404;
+  margin-bottom: 15px;
+}

@@ -34,11 +34,15 @@ Imports:
    predict3d(>= 0.1.3.3),
    interactions,
    ztable,
-   rmarkdown
+   rmarkdown,
+   plm,
+   sandwich,
+   lmtest
 Suggests:
    shiny,
    shinyWidgets,
    knitr,
-   readr
+   readr,
+   panelvar
 RoxygenNote: 7.2.3
 VignetteBuilder: knitr

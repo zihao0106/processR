@@ -77,7 +77,119 @@ You can see full vignette for model 8 at http://rpubs.com/cardiomoon/468602
 I have developed a shiny app. You can test the app at https://cardiomoon.shinyapps.io/processR.
 I will appreciate any comment.
 
-## How to perform this analysis with shiny app
+## New Feature: Panel Data Analysis
+
+**processR now supports panel data analysis!** 
+
+The package has been extended to handle longitudinal/panel data for mediation and moderation analysis, providing researchers with powerful tools for analyzing dynamic relationships over time.
+
+### Panel Data Features
+
+- **Multiple panel model types**: Fixed effects, random effects, pooled OLS, between estimator
+- **Dynamic panel models**: Support for lagged variables and temporal dependencies  
+- **Robust standard errors**: Corrects for heteroscedasticity and serial correlation
+- **Multiple mediators**: Handle complex mediation pathways in panel data
+- **Time-varying moderators**: Analyze moderation effects that change over time
+
+### Example: Panel Data Mediation Analysis
+
+```r
+# Load panel data
+data(Grunfeld, package = "plm")
+
+# Add mediator variable
+Grunfeld$efficiency <- 0.3 * Grunfeld$inv + 0.2 * Grunfeld$capital + rnorm(nrow(Grunfeld))
+
+# Panel mediation analysis
+panel_result <- multipleMediation(
+  X = "inv",           # Investment (independent variable)
+  M = "efficiency",    # Efficiency (mediator)
+  Y = "value",         # Firm value (dependent variable)
+  data = Grunfeld,
+  panel = TRUE,        # Enable panel analysis
+  id = "firm",         # Firm identifier
+  time = "year",       # Time identifier
+  panel_model = "within",  # Fixed effects model
+  robust_se = TRUE     # Robust standard errors
+)
+
+# View results
+print(panel_result)
+summary(panel_result)
+```
+
+### Panel Data Advantages
+
+- **Control for unobserved heterogeneity**: Fixed effects eliminate time-invariant confounders
+- **Increased statistical power**: More observations through time dimension
+- **Causal inference**: Better identification of causal relationships
+- **Dynamic analysis**: Study how relationships evolve over time
+
+### Interactive Panel Data Analysis
+
+**New Shiny Application for Panel Data!**
+
+We've created a comprehensive Shiny application specifically for panel data analysis:
+
+```r
+# Launch the panel data analysis app
+runPanelApp()
+```
+
+**Features of the Panel Data App:**
+- 📊 **Interactive Data Upload**: Support for CSV files and sample datasets
+- 🔧 **Flexible Model Configuration**: Choose from multiple panel model types
+- 📈 **Real-time Visualization**: Interactive plots and diagnostics
+- 🔍 **Model Comparison**: Compare different panel specifications side-by-side
+- 💾 **Export Capabilities**: Download results in multiple formats (HTML, PDF, Word, PowerPoint)
+- 📋 **User-friendly Interface**: Intuitive design for researchers of all levels
+
+**Panel Model Types Supported:**
+- Fixed Effects (within) - Controls for individual heterogeneity
+- Random Effects (random) - Efficient when assumptions met
+- Pooled OLS (pooling) - Baseline comparison
+- Between Estimator (between) - Cross-sectional variation only
+
+## Traditional Shiny App (Cross-sectional Analysis)
+
+I have developed a shiny app for traditional processR analysis. You can test the app at https://cardiomoon.shinyapps.io/processR.
+
+```r
+# Launch traditional processR app
+showModels()
+```
+
+## How to perform panel data analysis with the new Shiny app
+
+1. **Launch the app**: Run `runPanelApp()` in R
+2. **Upload your data**: Use the file upload feature or try the sample Grunfeld dataset
+3. **Configure panel structure**: Specify your individual ID and time variables
+4. **Select variables**: Choose your X (independent), M (mediator), Y (dependent), and optional moderator variables
+5. **Choose model specifications**: Select panel model type, effect types, and other options
+6. **Run analysis**: Click the "Run Panel Analysis" button
+7. **Explore results**: View results across multiple tabs (Results, Visualizations, Model Comparison)
+8. **Export findings**: Download comprehensive reports in your preferred format
+
+## How to perform traditional analysis with shiny app
+
+You can see how to perform this analysis at http://rpubs.com/cardiomoon/468600
+
+## Sample powerpoint file
+
+In the shiny app, you can download the analysis results as a powerpoint file. You can download the sample file [model8.pptx](https://github.com/cardiomoon/processRDocs/blob/master/model8/model8.pptx?raw=true) - view with [office web viewer](https://view.officeapps.live.com/op/view.aspx?src=https://github.com/cardiomoon/processRDocs/blob/master/model8/model8.pptx?raw=true).
+- 🔧 **Flexible Model Configuration**: Choose from multiple panel model types
+- 📈 **Real-time Visualization**: Interactive plots and diagnostics
+- 🔍 **Model Comparison**: Compare different panel specifications side-by-side
+- 💾 **Export Capabilities**: Download results in multiple formats (HTML, PDF, Word, PowerPoint)
+- 📋 **User-friendly Interface**: Intuitive design for researchers of all levels
+
+**Panel Model Types Supported:**
+- Fixed Effects (within) - Controls for individual heterogeneity
+- Random Effects (random) - Efficient when assumptions met
+- Pooled OLS (pooling) - Baseline comparison
+- Between Estimator (between) - Cross-sectional variation only
+
+## Traditional Shiny App (Cross-sectional Analysis)
 
 You can see how to perform this analysis at http://rpubs.com/cardiomoon/468600
 
